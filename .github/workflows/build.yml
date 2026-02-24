@@ -1,0 +1,15 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    uses: netwarlan/action-container-build/.github/workflows/build-publish.yaml@main
+    with:
+      image-name: kea-telegraf-plugin
