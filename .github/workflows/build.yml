@@ -9,6 +9,21 @@ on:
       - main
 
 jobs:
+  version:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: netwarlan/action-semantic-versioning@v1
+        id: version
+        with:
+          create-release: 'true'
+
   build:
     uses: netwarlan/action-container-build/.github/workflows/build-publish.yaml@main
     with:

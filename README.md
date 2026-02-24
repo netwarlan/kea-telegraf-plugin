@@ -105,6 +105,18 @@ volumes:
   data_format = "influx"
 ```
 
+## Versioning
+
+This project uses automatic [semantic versioning](https://semver.org/) via [action-semantic-versioning](https://github.com/netwarlan/action-semantic-versioning). When commits are pushed to `main`, the action parses commit messages using [Conventional Commits](https://www.conventionalcommits.org/) and creates a git tag and GitHub release.
+
+| Commit prefix | Bump | Example |
+|---------------|------|---------|
+| `fix:` | patch | `v1.0.0` → `v1.0.1` |
+| `feat:` | minor | `v1.0.0` → `v1.1.0` |
+| `BREAKING CHANGE:` or `!` | major | `v1.0.0` → `v2.0.0` |
+
+Commits that don't match a conventional type (e.g. `docs:`, `chore:`) are skipped.
+
 ## Building
 
 ```bash
