@@ -5,7 +5,7 @@ BUILD_DATE ?= $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 BINARY_NAME = keastats
 DOCKER_IMAGE = keastats
 
-.PHONY: build docker test lint clean
+.PHONY: build docker test lint clean setup
 
 build:
 	go build -ldflags="-w -s -X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(BUILD_DATE)" \
@@ -23,3 +23,6 @@ lint:
 
 clean:
 	rm -rf bin/ coverage.out
+
+setup:
+	git config core.hooksPath .githooks

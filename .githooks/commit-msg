@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# Validates commit messages follow Conventional Commits format.
+# https://www.conventionalcommits.org/
+#
+# Valid:   feat: add new feature
+#          fix: resolve bug
+#          fix!: breaking change
+# Invalid: added new feature
+
+msg=$(head -1 "$1")
+
+# Allow merge commits
+if echo "$msg" | grep -qE '^Merge '; then
+  exit 0
+fi
+
+if ! echo "$msg" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?\!?: .+'; then
+  echo ""
+  echo "ERROR: Commit message must follow Conventional Commits format."
+  echo ""
+  echo "  <type>: <description>"
+  echo ""
+  echo "  Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+  echo "  Breaking: add ! before colon (e.g. feat!: breaking change)"
+  echo ""
+  echo "  Your message: $msg"
+  echo ""
+  exit 1
+fi

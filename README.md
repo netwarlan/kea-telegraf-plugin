@@ -117,6 +117,13 @@ This project uses automatic [semantic versioning](https://semver.org/) via [acti
 
 Commits that don't match a conventional type (e.g. `docs:`, `chore:`) are skipped.
 
+## Getting Started
+
+```bash
+make setup    # configure git hooks (enforces Conventional Commits on commit messages)
+make build    # compile to bin/keastats
+```
+
 ## Building
 
 ```bash
