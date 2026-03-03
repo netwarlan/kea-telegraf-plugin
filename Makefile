@@ -12,8 +12,8 @@ build:
 		-o bin/$(BINARY_NAME) ./cmd/keastats
 
 docker:
-	docker build --build-arg VERSION=$(VERSION) --build-arg COMMIT=$(COMMIT) \
-		--build-arg BUILD_DATE=$(BUILD_DATE) -t $(DOCKER_IMAGE):$(VERSION) -t $(DOCKER_IMAGE):latest .
+	docker build --build-arg VERSION=$(VERSION) --build-arg GIT_COMMIT=$(COMMIT) \
+		--build-arg BUILD_TIME=$(BUILD_DATE) -t $(DOCKER_IMAGE):$(VERSION) -t $(DOCKER_IMAGE):latest .
 
 test:
 	go test -v -race -coverprofile=coverage.out ./...

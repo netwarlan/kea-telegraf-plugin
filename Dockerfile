@@ -1,8 +1,8 @@
 FROM golang:1.25-alpine AS builder
 
 ARG VERSION=dev
-ARG COMMIT=none
-ARG BUILD_DATE=unknown
+ARG GIT_COMMIT=none
+ARG BUILD_TIME=unknown
 
 RUN apk add --no-cache git ca-certificates
 
@@ -12,7 +12,7 @@ RUN go mod download
 COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
-    -ldflags="-w -s -X main.version=${VERSION} -X main.commit=${COMMIT} -X main.date=${BUILD_DATE}" \
+    -ldflags="-w -s -X main.version=${VERSION} -X main.commit=${GIT_COMMIT} -X main.date=${BUILD_TIME}" \
     -o /keastats ./cmd/keastats
 
 FROM alpine:3.21
