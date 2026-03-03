@@ -1,5 +1,9 @@
 # kea-telegraf-plugin
 
+[![Build](https://img.shields.io/github/actions/workflow/status/netwarlan/kea-telegraf-plugin/build.yml)](https://github.com/netwarlan/kea-telegraf-plugin/actions)
+[![Release](https://img.shields.io/github/v/release/netwarlan/kea-telegraf-plugin)](https://github.com/netwarlan/kea-telegraf-plugin/releases)
+[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/QtqKW9xvzK)
+
 A Go binary that queries the [Kea DHCP4](https://www.isc.org/kea/) Control Agent's `statistic-get-all` API and outputs clean [InfluxDB line protocol](https://docs.influxdata.com/influxdb/v2/reference/syntax/line-protocol/) for [Telegraf](https://www.influxdata.com/time-series-platform/telegraf/) `inputs.exec`.
 
 ## Why
