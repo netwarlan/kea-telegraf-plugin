@@ -43,6 +43,9 @@ jobs:
 
   build:
     needs: [version]
+    permissions:
+      contents: read
+      packages: write
     uses: netwarlan/action-container-build/.github/workflows/build-publish.yaml@v1
     secrets: inherit
     with:
