@@ -10,36 +10,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  commit-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: wagoid/commitlint-github-action@v6
-
   version:
     runs-on: ubuntu-latest
     permissions:
       contents: read
     outputs:
-      new-version: ${{ steps.version.outputs.new-version }}
-      skipped: ${{ steps.version.outputs.skipped }}
-      changelog: ${{ steps.version.outputs.changelog }}
+      version: ${{ steps.version.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - name: Fix git ownership for Docker actions
-        run: |
-          git config --global --add safe.directory /github/workspace
-          mkdir -p "$RUNNER_TEMP/_github_home"
-          git config --file "$RUNNER_TEMP/_github_home/.gitconfig" --add safe.directory /github/workspace
-      - uses: netwarlan/action-semantic-versioning@v1
-        id: version
+      - uses: cocogitto/cocogitto-action@v3
+        id: cocogitto
         with:
-          dry-run: 'true'
-          bump-patch-on-unknown: 'true'
+          release: true
+          check: true
+          check-latest-tag-only: true
+      - name: Set version output
+        id: version
+        run: echo "version=${{ steps.cocogitto.outputs.version }}" >> "$GITHUB_OUTPUT"
 
   build:
     needs: [version]
@@ -50,29 +39,26 @@ jobs:
     secrets: inherit
     with:
       image-name: ${{ github.event.repository.name }}
-      version: ${{ needs.version.outputs.new-version }}
+      version: ${{ needs.version.outputs.version }}
       build-args: |
-        VERSION=${{ needs.version.outputs.new-version || 'dev' }}
+        VERSION=${{ needs.version.outputs.version || 'dev' }}
         GIT_COMMIT=${{ github.sha }}
         BUILD_TIME=${{ github.event.head_commit.timestamp }}
 
   release:
     needs: [version, build]
-    if: needs.version.outputs.new-version != ''
+    if: needs.version.outputs.version != ''
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Create release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CHANGELOG: ${{ needs.version.outputs.changelog }}
         run: |
-          if [ -n "$CHANGELOG" ]; then
-            gh release create "${{ needs.version.outputs.new-version }}" --notes "$CHANGELOG"
-          else
-            gh release create "${{ needs.version.outputs.new-version }}" --generate-notes
-          fi
+          git tag "${{ needs.version.outputs.version }}"
+          git push origin "${{ needs.version.outputs.version }}"
+          gh release create "${{ needs.version.outputs.version }}" --generate-notes
